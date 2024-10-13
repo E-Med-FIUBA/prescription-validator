@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../utils/validators.dart';
+
 class StyledFormField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
   final Widget? suffixIcon;
-  final String? Function(String?)? validator;
+  final List<Validators> validators;
   final void Function(String?)? onSaved;
 
   const StyledFormField({
@@ -12,12 +14,14 @@ class StyledFormField extends StatelessWidget {
     required this.labelText,
     this.obscureText = false,
     this.suffixIcon,
-    this.validator,
+    this.validators = const [],
     this.onSaved,
   });
 
   @override
   Widget build(BuildContext context) {
+    final FormInputValidator inputValidator =
+        FormInputValidator(validators, Key(labelText));
     return TextFormField(
       obscureText: obscureText,
       decoration: InputDecoration(
@@ -26,7 +30,7 @@ class StyledFormField extends StatelessWidget {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
         suffixIcon: suffixIcon,
       ),
-      validator: validator,
+      validator: inputValidator.validate,
       onSaved: onSaved,
     );
   }

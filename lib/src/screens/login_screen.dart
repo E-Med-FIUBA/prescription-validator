@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/styled_form_field.dart';
 import 'package:http/http.dart' as http;
@@ -79,13 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 32),
               StyledFormField(
                 labelText: 'Email',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  // Add email format validation if needed
-                  return null;
-                },
+                validators: const [Validators.required, Validators.email],
                 onSaved: (value) => _formData.email = value ?? '',
               ),
               const SizedBox(height: 16),
@@ -99,13 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  // Add password strength validation if needed
-                  return null;
-                },
+                validators: const [Validators.required],
                 onSaved: (value) => _formData.password = value ?? '',
               ),
               const SizedBox(height: 8),
