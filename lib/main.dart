@@ -13,6 +13,9 @@ void main() async {
   // This prevents a sudden theme change when the app is first displayed.
   await settingsController.loadSettings();
 
+  settingsController.updateThemeMode(ThemeMode.dark);
+  WidgetsFlutterBinding.ensureInitialized();
+
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
