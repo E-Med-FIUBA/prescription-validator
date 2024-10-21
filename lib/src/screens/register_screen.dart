@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
 
+import '../services/api/api.dart';
+import '../services/signature/key_repository.dart';
 import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/styled_form_field.dart';
-import 'package:http/http.dart' as http;
 
 class FormData {
   String email = '';
@@ -13,7 +15,15 @@ class FormData {
   String firstName = '';
   String lastName = '';
   String license = '';
-  String dni = '';
+  int dni = 0;
+
+  Map<String, String> toJson() => {
+        'email': email,
+        'password': password,
+        'firstName': firstName,
+        'license': license,
+        'dni': dni.toString()
+      };
 }
 
 class RegisterScreen extends StatefulWidget {
@@ -30,39 +40,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      setState(() => _isLoading = true);
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+    setState(() => _isLoading = true);
 
-      try {
-        final response = await http.post(
-          Uri.parse('https://your-backend-url.com/submit'),
-          headers: {'Content-Type': 'application/json; charset=UTF-8'},
-          body: jsonEncode({
-            'email': _formData.email,
-            'password': _formData.password,
-            'firstName': _formData.firstName,
-            'lastName': _formData.lastName,
-            'license': _formData.license,
-            'dni': _formData.dni,
-          }),
-        );
+    try {
+      final response =
+          await ApiService.post('auth/register', _formData.toJson());
 
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Form submitted successfully!')),
-          );
-          // Handle successful submission
-        } else {
-          throw Exception('Submission failed');
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Submission failed. Please try again.')),
-        );
-      } finally {
-        setState(() => _isLoading = false);
+      if (response.statusCode == 200) {
+        showMessage('Registrado correctamente', context);
+
+        // Handle successful submission
+      } else {
+        throw Exception('Submission failed');
       }
+    } catch (e) {
+      showMessage('Error en el registro.', context);
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -128,7 +124,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               StyledFormField(
                 labelText: 'DNI',
                 validators: const [Validators.required, Validators.number],
-                onSaved: (value) => _formData.dni = value ?? '',
+                onSaved: (value) =>
+                    _formData.dni = value != null ? int.parse(value) : 0,
               ),
               const SizedBox(height: 24),
               PrimaryButton(

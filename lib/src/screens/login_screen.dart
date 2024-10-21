@@ -1,15 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
+import '../services/api/api.dart';
+import '../utils/scaffold_messenger.dart';
 import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/styled_form_field.dart';
-import 'package:http/http.dart' as http;
 
 class FormData {
   String email = '';
   String password = '';
+
+  Map<String, String> toJson() => {'email': email, 'password': password};
 }
 
 class LoginScreen extends StatefulWidget {
@@ -26,35 +27,24 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      setState(() => _isLoading = true);
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+    setState(() => _isLoading = true);
 
-      try {
-        final response = await http.post(
-          Uri.parse('https://your-backend-url.com/submit'),
-          headers: {'Content-Type': 'application/json; charset=UTF-8'},
-          body: jsonEncode({
-            'email': _formData.email,
-            'password': _formData.password,
-          }),
-        );
+    try {
+      final response = await ApiService.post('auth/login', _formData.toJson());
 
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Form submitted successfully!')),
-          );
-          // Handle successful submission
-        } else {
-          throw Exception('Submission failed');
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Submission failed. Please try again.')),
-        );
-      } finally {
-        setState(() => _isLoading = false);
+      if (response.statusCode == 200) {
+        showMessage('Iniciaste de sesion correctamente', context);
+
+        // Handle successful submission
+      } else {
+        throw Exception('Submission failed');
       }
+    } catch (e) {
+      showMessage('Error en el inicio de sesion.', context);
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 

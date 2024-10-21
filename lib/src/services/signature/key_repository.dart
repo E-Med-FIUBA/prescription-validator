@@ -9,6 +9,7 @@ enum _SecureStorageKeys { privateKey, certificate, publicKey }
 class KeyPairRepository {
   static late final FlutterSecureStorage _secureStorage;
 
+  // Reemplazar por Certificate request
   static RSAPublicKey? _publicKey;
 
   static RSAPrivateKey? _privateKey;
@@ -38,6 +39,10 @@ class KeyPairRepository {
   }
 
   setKeyPair() async {
+    if (_publicKey != null && _privateKey != null) {
+      return;
+    }
+
     final keyPair = generateRSAkeyPair(generateSecureRandom());
 
     _publicKey = keyPair.publicKey;

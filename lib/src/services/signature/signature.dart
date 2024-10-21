@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:emed/src/services/secure_storage/key_repository.dart';
+import 'package:emed/src/services/signature/key_repository.dart';
 import 'package:pointycastle/export.dart';
 
 class Signature {
