@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
 
 import '../services/api/api.dart';
-import '../services/signature/key_repository.dart';
 import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/styled_form_field.dart';
@@ -51,8 +48,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (response.statusCode == 200) {
         showMessage('Registrado correctamente', context);
 
-        // Handle successful submission
-      } else {
         throw Exception('Submission failed');
       }
     } catch (e) {
@@ -77,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Inicia Sesion',
+              const Text('Crea tu cuenta',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 32),
               StyledFormField(
@@ -132,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onPressed: _isLoading ? null : _submitForm,
                 child: _isLoading
                     ? const CircularProgressIndicator()
-                    : const Text('Submit'),
+                    : const Text('Registrate'),
               ),
             ],
           ),

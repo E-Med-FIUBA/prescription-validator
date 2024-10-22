@@ -45,7 +45,7 @@ class FormInputValidator {
 
   String? validateEmail(Key key, String? value) {
     if (value == null) {
-      return 'Ingrese un ${key.toString().toLowerCase()}';
+      return 'Ingrese un ${key.toString().toLowerCase().replaceAll(RegExp(r'<>[]'), '')}';
     }
 
     if (!emailRegex.hasMatch(value)) {

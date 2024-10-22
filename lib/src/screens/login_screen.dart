@@ -1,6 +1,8 @@
+import 'package:emed/src/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../services/api/api.dart';
+import '../utils/navigation.dart';
 import '../utils/scaffold_messenger.dart';
 import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
@@ -93,7 +95,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                   onPressed: () {},
                   child: Text(
-                    'Forgot Password?',
+                    'Olvidaste tu contraseña?',
+                    style: TextStyle(color: colorScheme.primary),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: () => navigate(const RegisterScreen(), context),
+                  child: Text(
+                    'Todavia no tenes cuenta?',
                     style: TextStyle(color: colorScheme.primary),
                   ),
                 ),
