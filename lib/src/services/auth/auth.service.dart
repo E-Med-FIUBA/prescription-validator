@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:emed/src/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../api/api.dart';
 
 class AuthService {
   final StreamController<bool> _authStateController =
@@ -13,7 +16,8 @@ class AuthService {
   // Check the initial auth state when the service is created
   Future<void> _checkInitialAuthState() async {
     final prefs = SharedPreferencesAsync();
-    _isLoggedIn = await prefs.getBool('isLoggedIn') ?? false;
+    final token = await prefs.getString('token');
+    _isLoggedIn = token != null;
     _authStateController.add(_isLoggedIn);
   }
 
@@ -29,18 +33,27 @@ class AuthService {
   bool get isLoggedIn => _isLoggedIn;
 
   // Login method
-  Future<bool> login(String username, String password) async {
+  Future<bool> login(LoginFormData data) async {
     // Here you would typically make an API call to validate credentials
     // For this example, we'll just check if the username and password are not empty
-    if (username.isNotEmpty && password.isNotEmpty) {
+    try {
+      final response = await ApiService.post('auth/login', data.toJson());
+
+      if (response.statusCode != 200) {
+        throw Exception('Invalid credentials');
+      }
+
       _isLoggedIn = true;
       final prefs = SharedPreferencesAsync();
 
-      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('token', response.body['token']);
+
       _authStateController.add(true);
+
       return true;
+    } catch (err) {
+      rethrow;
     }
-    return false;
   }
 
   // Logout method
@@ -48,7 +61,7 @@ class AuthService {
     _isLoggedIn = false;
     final prefs = SharedPreferencesAsync();
 
-    await prefs.setBool('isLoggedIn', false);
+    await prefs.remove('token');
     _authStateController.add(false);
   }
 

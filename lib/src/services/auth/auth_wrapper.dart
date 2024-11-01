@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../../screens/login_screen.dart';
@@ -20,7 +18,6 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<bool>(
       stream: authService.authStateChanges(),
       builder: (context, snapshot) {
-        log("${snapshot.data}");
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(

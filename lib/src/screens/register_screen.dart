@@ -1,7 +1,9 @@
+import 'package:emed/src/screens/empty_screen.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
 
 import '../services/api/api.dart';
+import '../utils/navigation.dart';
 import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/styled_form_field.dart';
@@ -14,12 +16,13 @@ class FormData {
   String license = '';
   int dni = 0;
 
-  Map<String, String> toJson() => {
+  Map<String, dynamic> toJson() => {
         'email': email,
         'password': password,
-        'firstName': firstName,
+        'name': firstName,
+        'lastName': lastName,
         'license': license,
-        'dni': dni.toString()
+        'dni': dni
       };
 }
 
@@ -43,12 +46,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final response =
-          await ApiService.post('auth/register', _formData.toJson());
+          await ApiService.post('auth/register/pharmacist', _formData.toJson());
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         showMessage('Registrado correctamente', context);
-
-        throw Exception('Submission failed');
+        navigate(const EmptyScreen(), context);
+      } else {
+        showMessage('Error en el registro. ${response.body}', context);
       }
     } catch (e) {
       showMessage('Error en el registro.', context);

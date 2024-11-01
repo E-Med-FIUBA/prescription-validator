@@ -1,5 +1,8 @@
+import 'package:emed/src/screens/qr_scanner_screen.dart';
 import 'package:emed/src/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/navigation.dart';
 
 class EmptyScreen extends StatelessWidget {
   const EmptyScreen({super.key});
@@ -7,6 +10,19 @@ class EmptyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int selectedIndex = 0;
+
+    void navigateTo(int index) {
+      switch (index) {
+        case 0:
+          navigate(const EmptyScreen(), context);
+          break;
+        case 2:
+          navigate(const QRScannerScreen(), context);
+          break;
+        default:
+          navigate(const EmptyScreen(), context);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +54,7 @@ class EmptyScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavBar(
           selectedIndex: selectedIndex,
-          onItemTapped: (index) => selectedIndex = index),
+          onItemTapped: (index) => {navigateTo(index)}),
     );
   }
 }

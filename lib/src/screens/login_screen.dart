@@ -1,14 +1,14 @@
 import 'package:emed/src/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-
-import '../services/api/api.dart';
+import '../services/auth/auth.service.dart';
 import '../utils/navigation.dart';
 import '../utils/scaffold_messenger.dart';
 import '../utils/validators.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/styled_form_field.dart';
+import 'empty_screen.dart';
 
-class FormData {
+class LoginFormData {
   String email = '';
   String password = '';
 
@@ -24,9 +24,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _formData = FormData();
+  final _formData = LoginFormData();
   bool _isLoading = false;
   bool _obscurePassword = true;
+
+  final authService = AuthService();
 
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
@@ -34,17 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final response = await ApiService.post('auth/login', _formData.toJson());
+      await authService.login(_formData);
 
-      if (response.statusCode == 200) {
-        showMessage('Iniciaste de sesion correctamente', context);
-
-        // Handle successful submission
-      } else {
-        throw Exception('Submission failed');
-      }
+      navigate(const EmptyScreen(), context);
     } catch (e) {
-      showMessage('Error en el inicio de sesion.', context);
+      showMessage('Error en el inicio de sesion. $e', context);
     } finally {
       setState(() => _isLoading = false);
     }
