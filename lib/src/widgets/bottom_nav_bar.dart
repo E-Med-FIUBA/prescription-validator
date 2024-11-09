@@ -22,23 +22,23 @@ class CustomBottomNavBar extends StatelessWidget {
           backgroundColor: colorScheme.surfaceContainer,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Inicio',
+              icon: Icon(Icons.history),
+              label: 'Historial',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.description),
-              label: 'Actividad',
+              icon: Icon(Icons.local_activity),
+              label: 'Metricas',
             ),
             BottomNavigationBarItem(
               icon: SizedBox(height: 0), // Placeholder for QR code
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.card_giftcard),
-              label: 'Beneficios',
+              icon: Icon(Icons.person),
+              label: 'Perfil',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.menu),
+              icon: Icon(Icons.settings),
               label: 'Más',
             ),
           ],

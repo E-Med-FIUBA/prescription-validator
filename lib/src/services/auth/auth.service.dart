@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:emed/src/screens/login_screen.dart';
+import 'package:emed/src/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/api.dart';

@@ -1,12 +1,12 @@
-import 'package:emed/src/screens/empty_screen.dart';
+import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
 
-import '../services/api/api.dart';
-import '../utils/navigation.dart';
-import '../utils/validators.dart';
-import '../widgets/primary_button.dart';
-import '../widgets/styled_form_field.dart';
+import '../../services/api/api.dart';
+import '../../utils/navigation.dart';
+import '../../utils/validators.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/styled_form_field.dart';
 
 class FormData {
   String email = '';
@@ -29,6 +29,8 @@ class FormData {
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
+  static const routeName = '/auth/register';
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
@@ -50,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (response.statusCode == 201) {
         showMessage('Registrado correctamente', context);
-        navigate(const EmptyScreen(), context);
+        navigate(PrescriptionHistoryScreen.routeName, context);
       } else {
         showMessage('Error en el registro. ${response.body}', context);
       }

@@ -1,16 +1,18 @@
 import 'package:emed/src/services/auth/auth.service.dart';
+import 'package:emed/src/services/pharmacist/pharmacist.service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsService {
+class PharmacistProfileService {
   final AuthService _authService;
 
-  SettingsService(this._authService);
+  PharmacistProfileService(this._authService);
 
+  /// Loads the Pharmacist's preferred ThemeMode from local or remote storage.
   Future<ThemeMode> themeMode() async {
-    final sharedPreferences = SharedPreferencesAsync();
+    final sharedPreferences = await SharedPreferences.getInstance();
 
-    final themeMode = await sharedPreferences.getString('themeMode');
+    final themeMode = sharedPreferences.getString('themeMode');
 
     if (themeMode == 'light') {
       return ThemeMode.light;
@@ -23,7 +25,7 @@ class SettingsService {
 
   /// Persists the Pharmacist's preferred ThemeMode to local or remote storage.
   Future<void> updateThemeMode(ThemeMode theme) async {
-    final sharedPreferences = SharedPreferencesAsync();
+    final sharedPreferences = await SharedPreferences.getInstance();
 
     if (theme == ThemeMode.light) {
       await sharedPreferences.setString('themeMode', 'light');
@@ -32,6 +34,10 @@ class SettingsService {
     } else {
       await sharedPreferences.setString('themeMode', 'system');
     }
+  }
+
+  Future<Pharmacist> getPharmacist() async {
+    return PharmacistService.fetchPharmacist();
   }
 
   Future<void> logout() async {

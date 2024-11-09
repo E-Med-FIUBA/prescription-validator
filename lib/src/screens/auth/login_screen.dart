@@ -1,12 +1,12 @@
-import 'package:emed/src/screens/register_screen.dart';
+import 'package:emed/src/screens/auth/register_screen.dart';
+import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:flutter/material.dart';
-import '../services/auth/auth.service.dart';
-import '../utils/navigation.dart';
-import '../utils/scaffold_messenger.dart';
-import '../utils/validators.dart';
-import '../widgets/primary_button.dart';
-import '../widgets/styled_form_field.dart';
-import 'empty_screen.dart';
+import '../../services/auth/auth.service.dart';
+import '../../utils/navigation.dart';
+import '../../utils/scaffold_messenger.dart';
+import '../../utils/validators.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/styled_form_field.dart';
 
 class LoginFormData {
   String email = '';
@@ -16,7 +16,10 @@ class LoginFormData {
 }
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.authService});
+
+  static const routeName = '/auth/login';
+  final AuthService authService;
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -28,17 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  final authService = AuthService();
-
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
     setState(() => _isLoading = true);
 
     try {
-      await authService.login(_formData);
+      await widget.authService.login(_formData);
 
-      navigate(const EmptyScreen(), context);
+      navigate(PrescriptionHistoryScreen.routeName, context);
     } catch (e) {
       showMessage('Error en el inicio de sesion. $e', context);
     } finally {
@@ -99,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () => navigate(const RegisterScreen(), context),
+                  onPressed: () => navigate(RegisterScreen.routeName, context),
                   child: Text(
                     'Todavia no tenes cuenta?',
                     style: TextStyle(color: colorScheme.primary),

@@ -1,21 +1,32 @@
 import 'package:emed/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import '../components/qr_scanner.dart';
+import '../../components/qr_scanner.dart';
 import 'prescription_screen.dart';
 
 class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key});
+
+  static const routeName = '/qr-scanner';
 
   @override
   _QRScannerScreenState createState() => _QRScannerScreenState();
 }
 
 class _QRScannerScreenState extends State<QRScannerScreen> {
+  bool _hasScanned = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _hasScanned = false;
+  }
+
   void handleQR(Barcode? barcode) {
-    if (barcode != null && barcode.displayValue != null) {
-      navigate(
-          PrescriptionScreen(prescriptionId: barcode.displayValue!), context);
+    if (!_hasScanned && barcode != null && barcode.displayValue != null) {
+      _hasScanned = true;
+      navigate(PrescriptionScreen.routeName, context,
+          arguments: barcode.displayValue);
     }
   }
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../services/prescription/prescription.service.dart';
-import '../utils/scaffold_messenger.dart';
+import '../../services/prescription/prescription.service.dart';
+import '../../utils/scaffold_messenger.dart';
 
 class PrescriptionScreen extends StatefulWidget {
   final String prescriptionId;
+
+  static const routeName = '/prescription/detail';
 
   PrescriptionScreen({required this.prescriptionId});
 
@@ -49,24 +51,34 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
             final data = snapshot.data!;
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Drug: ${data.drug}',
-                      style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 8),
-                  Text('Presentation: ${data.presentation}',
-                      style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 8),
-                  Text('Indication: ${data.indication}',
-                      style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 8),
-                  Text('Quantity: ${data.quantity}',
-                      style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 8),
-                  Text('Doctor: ${data.doctor}',
-                      style: const TextStyle(fontSize: 18)),
-                ],
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Drug: ${data.drug}',
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 12),
+                      Text('Presentation: ${data.presentation}',
+                          style: const TextStyle(fontSize: 18)),
+                      const SizedBox(height: 12),
+                      Text('Indication: ${data.indication}',
+                          style: const TextStyle(fontSize: 18)),
+                      const SizedBox(height: 12),
+                      Text('Quantity: ${data.quantity}',
+                          style: const TextStyle(fontSize: 18)),
+                      const SizedBox(height: 12),
+                      Text('Doctor: ${data.doctor}',
+                          style: const TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                ),
               ),
             );
           }

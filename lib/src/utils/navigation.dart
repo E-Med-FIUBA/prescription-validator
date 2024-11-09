@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-void navigate(Widget screen, BuildContext context) {
-  Navigator.push(
+void navigate(String routeName, BuildContext context, {Object? arguments}) {
+  Navigator.pushNamed(
     context,
-    MaterialPageRoute(builder: (context) => screen),
+    routeName,
+    arguments: arguments,
   );
 }

@@ -1,4 +1,3 @@
-import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:flutter/material.dart';
 
 import 'settings_controller.dart';
@@ -20,7 +19,7 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: Row(
+      body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
@@ -50,7 +49,7 @@ class SettingsView extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-              onPressed: () => {AuthService().logout()},
+              onPressed: () => {controller.logout()},
               child: const Text('Logout'))
         ],
       ),
