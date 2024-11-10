@@ -6,7 +6,7 @@ import '../../utils/scaffold_messenger.dart';
 class PrescriptionScreen extends StatefulWidget {
   final String prescriptionId;
 
-  static const routeName = '/prescription/detail';
+  static const routeName = '/prescription';
 
   final PrescriptionService prescriptionService;
 
@@ -37,56 +37,51 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Prescription Details'),
-      ),
-      body: FutureBuilder<Prescription?>(
-        future: prescription,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text('No data found'));
-          } else {
-            final data = snapshot.data!;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Drug: ${data.drug}',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 12),
-                      Text('Presentation: ${data.presentation}',
-                          style: const TextStyle(fontSize: 18)),
-                      const SizedBox(height: 12),
-                      Text('Indication: ${data.indication}',
-                          style: const TextStyle(fontSize: 18)),
-                      const SizedBox(height: 12),
-                      Text('Quantity: ${data.quantity}',
-                          style: const TextStyle(fontSize: 18)),
-                      const SizedBox(height: 12),
-                      Text('Doctor: ${data.doctor}',
-                          style: const TextStyle(fontSize: 18)),
-                    ],
-                  ),
+    return FutureBuilder<Prescription?>(
+      future: prescription,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData) {
+          return const Center(child: Text('No data found'));
+        } else {
+          final data = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Drug: ${data.drug}',
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 12),
+                    Text('Presentation: ${data.presentation}',
+                        style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 12),
+                    Text('Indication: ${data.indication}',
+                        style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 12),
+                    Text('Quantity: ${data.quantity}',
+                        style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 12),
+                    Text('Doctor: ${data.doctor}',
+                        style: const TextStyle(fontSize: 18)),
+                  ],
                 ),
               ),
-            );
-          }
-        },
-      ),
+            ),
+          );
+        }
+      },
     );
   }
 }

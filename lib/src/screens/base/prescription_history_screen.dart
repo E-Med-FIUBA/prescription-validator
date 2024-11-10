@@ -3,17 +3,12 @@ import 'package:flutter/material.dart';
 class PrescriptionHistoryScreen extends StatelessWidget {
   const PrescriptionHistoryScreen({super.key});
 
-  static const routeName = '/prescription/history';
+  static const routeName = '/';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Historial de Recetas'),
-      ),
-      body: const Center(
-        child: Text('Historial de Recetas'),
-      ),
+    return const Center(
+      child: Text('Historial de Recetas'),
     );
   }
 }

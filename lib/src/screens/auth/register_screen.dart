@@ -1,9 +1,7 @@
-import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils/navigation.dart';
+import 'package:go_router/go_router.dart';
 import '../../utils/validators.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/styled_form_field.dart';
@@ -51,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       await widget.authService.register(_formData);
 
-      navigate(PrescriptionHistoryScreen.routeName, context);
+      context.push('/');
     } catch (e) {
       showMessage('Error en el registro. $e', context);
     } finally {

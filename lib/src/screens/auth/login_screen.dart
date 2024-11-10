@@ -1,8 +1,6 @@
-import 'package:emed/src/screens/auth/register_screen.dart';
-import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/auth/auth.service.dart';
-import '../../utils/navigation.dart';
 import '../../utils/scaffold_messenger.dart';
 import '../../utils/validators.dart';
 import '../../widgets/primary_button.dart';
@@ -39,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await widget.authService.login(_formData);
 
-      navigate(PrescriptionHistoryScreen.routeName, context);
+      context.go('/');
     } catch (e) {
       showMessage('Error en el inicio de sesion. $e', context);
     } finally {
@@ -100,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () => navigate(RegisterScreen.routeName, context),
+                  onPressed: () => context.push('/auth/register'),
                   child: Text(
                     'Todavia no tenes cuenta?',
                     style: TextStyle(color: colorScheme.primary),
@@ -115,33 +113,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     : const Text('Inicia Sesion'),
               ),
               const SizedBox(height: 16),
-              const Text('O', textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.apple),
-                label: const Text('Continue with Apple'),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.white),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.abc),
-                label: const Text('Continue with Google'),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.white),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
+              // const Text('O', textAlign: TextAlign.center),
+              // const SizedBox(height: 16),
+              // OutlinedButton.icon(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.apple),
+              //   label: const Text('Continue with Apple'),
+              //   style: OutlinedButton.styleFrom(
+              //     side: const BorderSide(color: Colors.white),
+              //     padding: const EdgeInsets.symmetric(vertical: 16),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              // OutlinedButton.icon(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.abc),
+              //   label: const Text('Continue with Google'),
+              //   style: OutlinedButton.styleFrom(
+              //     side: const BorderSide(color: Colors.white),
+              //     padding: const EdgeInsets.symmetric(vertical: 16),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

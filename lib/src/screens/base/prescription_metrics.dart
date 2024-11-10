@@ -7,12 +7,17 @@ class PrescriptionMetricsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Métricas de Recetas'),
-      ),
-      body: const Center(
-        child: Text('Métricas de Recetas'),
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Title',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          Text('Métricas de Recetas'),
+        ],
       ),
     );
   }
