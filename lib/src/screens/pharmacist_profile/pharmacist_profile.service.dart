@@ -1,3 +1,4 @@
+import 'package:emed/src/services/api/api.dart';
 import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:emed/src/services/pharmacist/pharmacist.service.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,8 @@ class PharmacistProfileService {
   }
 
   Future<Pharmacist> getPharmacist() async {
-    return PharmacistService.fetchPharmacist();
+    final service = PharmacistService(ApiService(authService: _authService));
+    return service.fetchPharmacist();
   }
 
   Future<void> logout() async {

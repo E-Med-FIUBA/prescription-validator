@@ -29,9 +29,9 @@ class PharmacistProfileView extends StatelessWidget {
             final pharmacist = snapshot.data!;
             return Center(
               child: Card(
-                margin: const EdgeInsets.all(16),
+                margin: const EdgeInsets.all(32), // Increased margin
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(32), // Increased padding
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

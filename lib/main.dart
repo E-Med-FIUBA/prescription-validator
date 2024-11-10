@@ -1,3 +1,4 @@
+import 'package:emed/src/services/api/api.dart';
 import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_service.dart';
@@ -12,6 +13,7 @@ void main() async {
   // Flutter Widgets.
   final AuthService authService = AuthService();
   final settingsController = SettingsController(SettingsService(authService));
+  final apiService = ApiService(authService: authService);
 
   // Load the user's preferred theme while the splash screen is displayed.
   // This prevents a sudden theme change when the app is first displayed.
@@ -25,5 +27,6 @@ void main() async {
   runApp(MyApp(
     settingsController: settingsController,
     authService: authService,
+    apiService: apiService,
   ));
 }

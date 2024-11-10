@@ -8,7 +8,10 @@ class PrescriptionScreen extends StatefulWidget {
 
   static const routeName = '/prescription/detail';
 
-  PrescriptionScreen({required this.prescriptionId});
+  final PrescriptionService prescriptionService;
+
+  PrescriptionScreen(
+      {required this.prescriptionId, required this.prescriptionService});
 
   @override
   _PrescriptionScreenState createState() => _PrescriptionScreenState();
@@ -25,7 +28,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
   Future<Prescription?> fetchPrescription(String id) async {
     try {
-      return await PrescriptionService.fetchPrescription(id);
+      return await widget.prescriptionService.fetchPrescription(id);
     } catch (err) {
       showMessage('Failed to load prescription', context);
     }

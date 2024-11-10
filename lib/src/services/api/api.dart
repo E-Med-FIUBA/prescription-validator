@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:emed/src/environment/environment.dart';
+import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiResponse<T> {
   final int statusCode;
@@ -19,17 +19,20 @@ class ApiResponse<T> {
 class ApiService {
   static const apiUrl = Environment.apiUrl;
 
-  static get headers async {
-    final sharedPreferences = SharedPreferencesAsync();
+  final AuthService authService;
 
-    final token = await sharedPreferences.getString('token');
+  ApiService({required this.authService});
+
+  get headers async {
+    final token = await authService.getToken();
+
     return {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token'
     };
   }
 
-  static Future<ApiResponse<ResponseBody>> post<RequestBody, ResponseBody>(
+  Future<ApiResponse<ResponseBody>> post<RequestBody, ResponseBody>(
       String url, RequestBody body) async {
     final response = await http.post(
       Uri.parse('$apiUrl/$url'),
@@ -37,15 +40,23 @@ class ApiService {
       body: jsonEncode(body),
     );
 
-    return ApiResponse(
-        statusCode: response.statusCode, responseBody: response.body);
+    return _interceptResponse<ResponseBody>(response);
   }
 
-  static Future<ApiResponse<ResponseBody>> get<ResponseBody>(String url) async {
+  Future<ApiResponse<ResponseBody>> get<ResponseBody>(String url) async {
     final response = await http.get(
       Uri.parse('$apiUrl/$url'),
       headers: await headers,
     );
+
+    return _interceptResponse<ResponseBody>(response);
+  }
+
+  ApiResponse<ResponseBody> _interceptResponse<ResponseBody>(
+      http.Response response) {
+    if (response.statusCode == 401) {
+      authService.logout();
+    }
 
     return ApiResponse(
         statusCode: response.statusCode, responseBody: response.body);

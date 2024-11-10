@@ -3,9 +3,13 @@ import 'dart:developer';
 import '../api/api.dart';
 
 class PharmacistService {
-  static Future<Pharmacist> fetchPharmacist() async {
+  final ApiService _apiService;
+
+  PharmacistService(this._apiService);
+
+  Future<Pharmacist> fetchPharmacist() async {
     try {
-      final response = await ApiService.get('users/me');
+      final response = await _apiService.get('users/me');
 
       if (response.statusCode == 200) {
         return Pharmacist.fromApiResponse(response);

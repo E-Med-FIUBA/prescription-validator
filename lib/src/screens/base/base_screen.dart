@@ -4,6 +4,7 @@ import 'package:emed/src/screens/pharmacist_profile/pharmacist_profile_view.dart
 import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/screens/base/prescription_metrics.dart';
 import 'package:emed/src/screens/base/qr_scanner_screen.dart';
+import 'package:emed/src/services/api/api.dart';
 import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_view.dart';
 import 'package:emed/src/widgets/bottom_nav_bar.dart';
@@ -15,11 +16,14 @@ class BaseScreen extends StatefulWidget {
   final PharmacistProfileController profileController;
   final int selectedIndex;
 
-  BaseScreen({
+  final ApiService apiService;
+
+  const BaseScreen({
     super.key,
     required this.settingsController,
     required this.profileController,
     required this.selectedIndex,
+    required this.apiService,
   });
 
   @override
@@ -48,7 +52,9 @@ class _BaseScreenState extends State<BaseScreen> {
       case indexPrescriptionMetrics:
         return const PrescriptionMetricsScreen();
       case indexQRScanner:
-        return const QRScannerScreen();
+        return QRScannerScreen(
+          apiService: widget.apiService,
+        );
       case indexPharmacistProfile:
         return PharmacistProfileView(controller: widget.profileController);
       case indexSettings:
@@ -67,7 +73,9 @@ class _BaseScreenState extends State<BaseScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: _getBody(),

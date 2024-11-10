@@ -6,7 +6,9 @@ import 'package:emed/src/screens/pharmacist_profile/pharmacist_profile_view.dart
 import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/screens/base/prescription_metrics.dart';
 import 'package:emed/src/screens/base/prescription_screen.dart';
+import 'package:emed/src/services/api/api.dart';
 import 'package:emed/src/services/auth/auth_wrapper.dart';
+import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_view.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +22,13 @@ class MyApp extends StatelessWidget {
   final SettingsController settingsController;
   final AuthService authService;
   late final PharmacistProfileController profileController;
+  final ApiService apiService;
 
   MyApp({
     super.key,
     required this.settingsController,
     required this.authService,
+    required this.apiService,
   }) {
     profileController =
         PharmacistProfileController(PharmacistProfileService(authService));
@@ -104,15 +108,19 @@ class MyApp extends StatelessWidget {
         return BaseScreen(
             settingsController: settingsController,
             profileController: profileController,
+            apiService: apiService,
             selectedIndex: _getSelectedIndex(routeSettings.name));
       case PrescriptionScreen.routeName:
         final String prescriptionId = routeSettings.arguments as String;
-        return PrescriptionScreen(prescriptionId: prescriptionId);
+        return PrescriptionScreen(
+            prescriptionId: prescriptionId,
+            prescriptionService: PrescriptionService(apiService));
       default:
         return BaseScreen(
             settingsController: settingsController,
             profileController: profileController,
-            selectedIndex: indexPharmacistProfile);
+            selectedIndex: indexPharmacistProfile,
+            apiService: apiService);
     }
   }
 

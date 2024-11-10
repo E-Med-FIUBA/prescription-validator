@@ -1,9 +1,13 @@
 import '../api/api.dart';
 
 class PrescriptionService {
-  static Future<Prescription> fetchPrescription(String id) async {
+  PrescriptionService(this._apiService);
+
+  final ApiService _apiService;
+
+  Future<Prescription> fetchPrescription(String id) async {
     try {
-      final response = await ApiService.get('prescriptions/$id/verify');
+      final response = await _apiService.get('prescriptions/$id/verify');
 
       if (response.statusCode == 200) {
         return Prescription.fromApiResponse(response);
