@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../services/prescription/prescription.service.dart';
 import '../../utils/scaffold_messenger.dart';
@@ -36,6 +39,16 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
     return null;
   }
 
+  Future<void> markAsUsed(String id) async {
+    try {
+      await widget.prescriptionService.markAsUsed(id);
+      showMessage('Receta marcada como usada', context);
+      context.go('/');
+    } catch (err) {
+      showMessage('Error al marcar la receta como usada', context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Prescription?>(
@@ -68,9 +81,6 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                     Text('Presentación: ${data.presentation}',
                         style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 12),
-                    Text('Indicación: ${data.indication}',
-                        style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 12),
                     Text('Cantidad: ${data.quantity}',
                         style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 12),
@@ -79,14 +89,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                     const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () async {
-                        try {
-                          await widget.prescriptionService
-                              .markAsUsed(widget.prescriptionId);
-                          showMessage('Receta marcada como usada', context);
-                        } catch (err) {
-                          showMessage(
-                              'Error al marcar la receta como usada', context);
-                        }
+                        await markAsUsed(widget.prescriptionId);
                       },
                       child: const Text('Marcar como usada'),
                     )

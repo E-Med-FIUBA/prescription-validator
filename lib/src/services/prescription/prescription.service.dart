@@ -19,12 +19,12 @@ class PrescriptionService {
     }
   }
 
-  Future<Prescription> markAsUsed(String id) async {
+  Future<void> markAsUsed(String id) async {
     try {
-      final response = await _apiService.post('prescriptions/$id/use', null);
+      final response = await _apiService.post('prescriptions/$id/use', {});
 
       if (response.statusCode == 201) {
-        return Prescription.fromApiResponse(response);
+        return;
       } else {
         throw Exception('Failed to mark prescription as used');
       }
@@ -41,7 +41,7 @@ class PrescriptionService {
         final prescriptions = <Prescription>[];
 
         for (final data in response.body) {
-          prescriptions.add(Prescription.fromApiResponse(data));
+          prescriptions.add(Prescription.fromJson(data));
         }
 
         return prescriptions;
@@ -57,16 +57,14 @@ class PrescriptionService {
 class Prescription {
   final String drug;
   final String presentation;
-  final String indication;
   final int quantity;
   final String doctor;
   final String patient;
-  final DateTime usedAt;
+  final DateTime? usedAt;
 
   Prescription(
       {required this.drug,
       required this.presentation,
-      required this.indication,
       required this.quantity,
       required this.doctor,
       required this.patient,
@@ -75,18 +73,34 @@ class Prescription {
   factory Prescription.fromApiResponse(ApiResponse<dynamic> response) {
     final data = response.body;
 
-    return Prescription(
+    final prescription = Prescription(
       drug: data['presentation']['drug']['name'],
       presentation: data['presentation']['name'],
-      indication: data['indication'],
       quantity: data['quantity'],
       doctor: data['doctor']['user']['name'] +
           ' ' +
           data['doctor']['user']['lastName'],
-      patient: data['patient']['user']['name'] +
-          ' ' +
-          data['patient']['user']['lastName'],
-      usedAt: DateTime.parse(data['usedAt']),
+      patient: data['patient']['name'] + ' ' + data['patient']['lastName'],
+      usedAt: data['usedAt'] != null ? DateTime.parse(data['usedAt']) : null,
     );
+
+    return prescription;
+  }
+
+  factory Prescription.fromJson(Map<String, dynamic> data) {
+    final prescription = Prescription(
+      drug: data['presentation']['drug']['name'] +
+          ' ' +
+          data['presentation']['commercialName'],
+      presentation: data['presentation']['name'],
+      quantity: data['quantity'],
+      doctor: data['doctor']['user']['name'] +
+          ' ' +
+          data['doctor']['user']['lastName'],
+      patient: data['patient']['name'] + ' ' + data['patient']['lastName'],
+      usedAt: data['usedAt'] != null ? DateTime.parse(data['usedAt']) : null,
+    );
+
+    return prescription;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PrescriptionHistoryScreen extends StatefulWidget {
   final PrescriptionService prescriptionService;
@@ -45,22 +46,53 @@ class _PrescriptionHistoryScreenState extends State<PrescriptionHistoryScreen> {
           return Center(child: Text('No se encontraron recetas.'));
         } else {
           final prescriptions = snapshot.data!;
-          return ListView.builder(
-            itemCount: prescriptions.length,
-            itemBuilder: (context, index) {
-              final prescription = prescriptions[index];
-              return Card(
-                child: ListTile(
-                  title:
-                      Text('${prescription.drug} (x${prescription.quantity})'),
-                  subtitle: Text(
-                    'Patient: ${prescription.patient}\n'
-                    'Doctor: ${prescription.doctor}\n'
-                    'Used: ${prescription.usedAt.toIso8601String()}',
-                  ),
+          return Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Historial de Recetas',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.left,
                 ),
-              );
-            },
+              ),
+              Expanded(
+                child: prescriptions.isEmpty
+                    ? Center(child: Text('No se encontraron recetas.'))
+                    : ListView.builder(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        itemCount: prescriptions.length,
+                        itemBuilder: (context, index) {
+                          final prescription = prescriptions[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Card(
+                              elevation: 2,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.all(16.0),
+                                title: Text(
+                                  '${prescription.drug} (x${prescription.quantity})',
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                subtitle: Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    // 'ID: ${prescription.id}\n'
+                                    'Paciente: ${prescription.patient}\n'
+                                    'Médico: ${prescription.doctor}\n'
+                                    'Usado: ${DateFormat('dd/MM/yyyy').format(prescription.usedAt!)}',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         }
       },
