@@ -52,6 +52,20 @@ class PrescriptionService {
       throw Exception('Failed to load prescription history');
     }
   }
+
+  Future<PrescriptionMetricsData> fetchPrescriptionMetrics() async {
+    try {
+      final response = await _apiService.get('prescriptions/metrics');
+
+      if (response.statusCode == 200) {
+        return PrescriptionMetricsData.fromApiResponse(response);
+      } else {
+        throw Exception('Failed to load prescription metrics');
+      }
+    } catch (e) {
+      throw Exception('Failed to load prescription metrics');
+    }
+  }
 }
 
 class Prescription {
@@ -103,4 +117,47 @@ class Prescription {
 
     return prescription;
   }
+}
+
+class PrescriptionMetricsData {
+  final List<DrugUsage> topDrugs;
+  final int totalPrescriptions;
+  final int averageDailyPrescriptions;
+  final int uniquePatients;
+  final int uniqueDoctors;
+
+  PrescriptionMetricsData({
+    required this.topDrugs,
+    required this.totalPrescriptions,
+    required this.averageDailyPrescriptions,
+    required this.uniquePatients,
+    required this.uniqueDoctors,
+  });
+
+  factory PrescriptionMetricsData.fromApiResponse(
+      ApiResponse<dynamic> response) {
+    final data = response.body;
+    return PrescriptionMetricsData(
+      topDrugs: data['topDrugs']
+          .map<DrugUsage>((drug) => DrugUsage(
+                name: drug['name'],
+                count: drug['count'],
+              ))
+          .toList(),
+      totalPrescriptions: data['totalPrescriptions'],
+      averageDailyPrescriptions: data['averageDailyPrescriptions'],
+      uniquePatients: data['uniquePatients'],
+      uniqueDoctors: data['uniqueDoctors'],
+    );
+  }
+}
+
+class DrugUsage {
+  final String name;
+  final int count;
+
+  DrugUsage({
+    required this.name,
+    required this.count,
+  });
 }

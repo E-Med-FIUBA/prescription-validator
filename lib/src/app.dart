@@ -9,7 +9,6 @@ import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/screens/base/prescription_metrics.dart';
 import 'package:emed/src/services/api/api.dart';
 import 'package:emed/src/services/auth/auth_wrapper.dart';
-import 'package:emed/src/services/pharmacist/pharmacist.service.dart';
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_view.dart';
@@ -95,7 +94,9 @@ class MyApp extends StatelessWidget {
                 path: PrescriptionMetricsScreen.routeName,
                 builder: (context, state) => LazyLoadScreen(
                   routeName: PrescriptionMetricsScreen.routeName,
-                  builder: () => PrescriptionMetricsScreen(),
+                  builder: () => PrescriptionMetricsScreen(
+                    prescriptionService: prescriptionService,
+                  ),
                 ),
               ),
               GoRoute(
