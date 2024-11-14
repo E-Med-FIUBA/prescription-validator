@@ -122,7 +122,7 @@ class Prescription {
 class PrescriptionMetricsData {
   final List<DrugUsage> topDrugs;
   final int totalPrescriptions;
-  final int averageDailyPrescriptions;
+  final double averageDailyPrescriptions;
   final int uniquePatients;
   final int uniqueDoctors;
 
@@ -145,7 +145,7 @@ class PrescriptionMetricsData {
               ))
           .toList(),
       totalPrescriptions: data['totalPrescriptions'],
-      averageDailyPrescriptions: data['averageDailyPrescriptions'],
+      averageDailyPrescriptions: data['averageDailyPrescriptions'].toDouble(),
       uniquePatients: data['uniquePatients'],
       uniqueDoctors: data['uniqueDoctors'],
     );

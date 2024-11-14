@@ -123,7 +123,7 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
                           ),
                         ),
                       ],
-                      textDirection: TextDirection.rtl);
+                      textDirection: TextDirection.ltr);
                 },
               ),
             ),
@@ -152,8 +152,6 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
                               fontSize: fontSize,
                               fontWeight: FontWeight.bold,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.right,
                           ),
                         ),
