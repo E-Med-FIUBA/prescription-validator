@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:emed/src/environment/environment.dart';
 import 'package:emed/src/screens/auth/login_screen.dart';
 import 'package:emed/src/screens/auth/register_screen.dart';
@@ -36,9 +37,12 @@ class AuthService {
 
   Future<bool> login(LoginFormData data) async {
     try {
+      final requestBody = jsonEncode(data.toJson());
+
       final response = await http.post(
-        Uri.parse('${Environment.apiUrl}/auth/login'),
-        body: data.toJson(),
+        Uri.parse('${Environment.apiUrl}/auth/login/pharmacist'),
+        body: requestBody,
+        headers: {'Content-Type': 'application/json'},
       );
 
       final apiResponse = ApiResponse(
@@ -60,9 +64,12 @@ class AuthService {
 
   Future<bool> register(RegisterFormData data) async {
     try {
+      final requestBody = jsonEncode(data.toJson());
+
       final response = await http.post(
-        Uri.parse('${Environment.apiUrl}/auth/register/doctor'),
-        body: data.toJson(),
+        Uri.parse('${Environment.apiUrl}/auth/register/pharmacist'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: requestBody,
       );
 
       final apiResponse = ApiResponse(

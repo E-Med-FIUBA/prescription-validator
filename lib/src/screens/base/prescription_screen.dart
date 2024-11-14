@@ -28,9 +28,10 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
   Future<Prescription?> fetchPrescription(String id) async {
     try {
-      return await widget.prescriptionService.fetchPrescription(id);
+      final response = await widget.prescriptionService.fetchPrescription(id);
+      return response;
     } catch (err) {
-      showMessage('Failed to load prescription', context);
+      showMessage('Error al cargar la receta', context);
     }
     return null;
   }
@@ -45,7 +46,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData) {
-          return const Center(child: Text('No data found'));
+          return const Center(child: Text('No se encontraron datos'));
         } else {
           final data = snapshot.data!;
           return Padding(
@@ -60,21 +61,35 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Drug: ${data.drug}',
+                    Text('Medicamento: ${data.drug}',
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 12),
-                    Text('Presentation: ${data.presentation}',
+                    Text('Presentación: ${data.presentation}',
                         style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 12),
-                    Text('Indication: ${data.indication}',
+                    Text('Indicación: ${data.indication}',
                         style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 12),
-                    Text('Quantity: ${data.quantity}',
+                    Text('Cantidad: ${data.quantity}',
                         style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 12),
                     Text('Doctor: ${data.doctor}',
                         style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          await widget.prescriptionService
+                              .markAsUsed(widget.prescriptionId);
+                          showMessage('Receta marcada como usada', context);
+                        } catch (err) {
+                          showMessage(
+                              'Error al marcar la receta como usada', context);
+                        }
+                      },
+                      child: const Text('Marcar como usada'),
+                    )
                   ],
                 ),
               ),

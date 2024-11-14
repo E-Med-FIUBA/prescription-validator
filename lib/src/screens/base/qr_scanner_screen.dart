@@ -1,15 +1,12 @@
-import 'package:emed/src/services/api/api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../components/qr_scanner.dart';
 
 class QRScannerScreen extends StatefulWidget {
-  const QRScannerScreen({super.key, required this.apiService});
+  const QRScannerScreen({super.key});
 
   static const routeName = '/qr-scanner';
-
-  final ApiService apiService; // Initialize the apiService
 
   @override
   _QRScannerScreenState createState() => _QRScannerScreenState();

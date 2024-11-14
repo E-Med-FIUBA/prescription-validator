@@ -9,9 +9,11 @@ import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/screens/base/prescription_metrics.dart';
 import 'package:emed/src/services/api/api.dart';
 import 'package:emed/src/services/auth/auth_wrapper.dart';
+import 'package:emed/src/services/pharmacist/pharmacist.service.dart';
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_view.dart';
+import 'package:emed/src/widgets/lazy_load_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
   final AuthService authService;
   late final PharmacistProfileController profileController;
   final ApiService apiService;
+  late final PrescriptionService prescriptionService;
 
   MyApp({
     super.key,
@@ -34,6 +37,8 @@ class MyApp extends StatelessWidget {
   }) {
     profileController =
         PharmacistProfileController(PharmacistProfileService(authService));
+
+    prescriptionService = PrescriptionService(apiService);
   }
 
   @override
@@ -63,7 +68,7 @@ class MyApp extends StatelessWidget {
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return PrescriptionScreen(
-              prescriptionService: PrescriptionService(apiService),
+              prescriptionService: prescriptionService,
               prescriptionId: id,
             );
           },
@@ -72,43 +77,53 @@ class MyApp extends StatelessWidget {
             navigatorKey: _shellNavigatorKey,
             builder: (context, state, child) => AuthWrapper(
                   authService: authService,
-                  child: BaseScreen(
-                      settingsController: settingsController,
-                      profileController: profileController,
-                      apiService: apiService,
-                      location: state.uri.toString(),
-                      child: child),
+                  child:
+                      BaseScreen(location: state.uri.toString(), child: child),
                 ),
             routes: [
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 path: PrescriptionHistoryScreen.routeName,
-                builder: (context, state) => PrescriptionHistoryScreen(),
+                builder: (context, state) => LazyLoadScreen(
+                  routeName: PrescriptionHistoryScreen.routeName,
+                  builder: () => PrescriptionHistoryScreen(
+                      prescriptionService: prescriptionService),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 path: PrescriptionMetricsScreen.routeName,
-                builder: (context, state) => PrescriptionMetricsScreen(),
+                builder: (context, state) => LazyLoadScreen(
+                  routeName: PrescriptionMetricsScreen.routeName,
+                  builder: () => PrescriptionMetricsScreen(),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 path: QRScannerScreen.routeName,
-                builder: (context, state) => QRScannerScreen(
-                  apiService: apiService,
+                builder: (context, state) => LazyLoadScreen(
+                  routeName: QRScannerScreen.routeName,
+                  builder: () => QRScannerScreen(),
                 ),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 path: PharmacistProfileView.routeName,
-                builder: (context, state) => PharmacistProfileView(
-                  controller: profileController,
+                builder: (context, state) => LazyLoadScreen(
+                  routeName: PharmacistProfileView.routeName,
+                  builder: () => PharmacistProfileView(
+                    controller: profileController,
+                  ),
                 ),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 path: SettingsView.routeName,
-                builder: (context, state) => SettingsView(
-                  controller: settingsController,
+                builder: (context, state) => LazyLoadScreen(
+                  routeName: SettingsView.routeName,
+                  builder: () => SettingsView(
+                    controller: settingsController,
+                  ),
                 ),
               ),
             ]),

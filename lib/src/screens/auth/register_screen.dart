@@ -49,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       await widget.authService.register(_formData);
 
-      context.push('/');
+      context.go('/');
     } catch (e) {
       showMessage('Error en el registro. $e', context);
     } finally {

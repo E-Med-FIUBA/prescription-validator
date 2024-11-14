@@ -1,10 +1,7 @@
-import 'package:emed/src/screens/pharmacist_profile/pharmacist_profile_controller.dart';
 import 'package:emed/src/screens/pharmacist_profile/pharmacist_profile_view.dart';
 import 'package:emed/src/screens/base/prescription_history_screen.dart';
 import 'package:emed/src/screens/base/prescription_metrics.dart';
 import 'package:emed/src/screens/base/qr_scanner_screen.dart';
-import 'package:emed/src/services/api/api.dart';
-import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_view.dart';
 import 'package:emed/src/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -12,21 +9,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class BaseScreen extends StatefulWidget {
-  final SettingsController settingsController;
-  final PharmacistProfileController profileController;
-
-  final ApiService apiService;
-
   final Widget child;
   final String location;
 
-  BaseScreen(
-      {super.key,
-      required this.settingsController,
-      required this.profileController,
-      required this.apiService,
-      required this.child,
-      required this.location});
+  BaseScreen({super.key, required this.child, required this.location});
 
   @override
   _BaseScreenState createState() => _BaseScreenState();
@@ -42,7 +28,10 @@ class _BaseScreenState extends State<BaseScreen> {
   ];
 
   void _goOtherTab(BuildContext context, int index) {
-    context.push(tabs[index]);
+    final String targetPath = tabs[index];
+    if (widget.location != targetPath) {
+      context.go(targetPath);
+    }
   }
 
   @override
