@@ -1,12 +1,12 @@
+import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../utils/validators.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/styled_form_field.dart';
 
-import '../services/api/api.dart';
-import '../utils/validators.dart';
-import '../widgets/primary_button.dart';
-import '../widgets/styled_form_field.dart';
-
-class FormData {
+class RegisterFormData {
   String email = '';
   String password = '';
   String firstName = '';
@@ -14,17 +14,22 @@ class FormData {
   String license = '';
   int dni = 0;
 
-  Map<String, String> toJson() => {
+  Map<String, dynamic> toJson() => {
         'email': email,
         'password': password,
-        'firstName': firstName,
+        'name': firstName,
+        'lastName': lastName,
         'license': license,
-        'dni': dni.toString()
+        'dni': dni
       };
 }
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key, required this.authService});
+
+  static const routeName = '/auth/register';
+
+  final AuthService authService;
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -32,7 +37,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _formData = FormData();
+  final _formData = RegisterFormData();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
@@ -42,16 +47,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final response =
-          await ApiService.post('auth/register', _formData.toJson());
+      await widget.authService.register(_formData);
 
-      if (response.statusCode == 200) {
-        showMessage('Registrado correctamente', context);
-
-        throw Exception('Submission failed');
-      }
+      context.go('/');
     } catch (e) {
-      showMessage('Error en el registro.', context);
+      showMessage('Error en el registro. $e', context);
     } finally {
       setState(() => _isLoading = false);
     }

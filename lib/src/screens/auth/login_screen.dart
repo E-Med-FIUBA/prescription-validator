@@ -1,14 +1,12 @@
-import 'package:emed/src/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../services/auth/auth.service.dart';
+import '../../utils/scaffold_messenger.dart';
+import '../../utils/validators.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/styled_form_field.dart';
 
-import '../services/api/api.dart';
-import '../utils/navigation.dart';
-import '../utils/scaffold_messenger.dart';
-import '../utils/validators.dart';
-import '../widgets/primary_button.dart';
-import '../widgets/styled_form_field.dart';
-
-class FormData {
+class LoginFormData {
   String email = '';
   String password = '';
 
@@ -16,7 +14,10 @@ class FormData {
 }
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.authService});
+
+  static const routeName = '/auth/login';
+  final AuthService authService;
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -24,7 +25,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _formData = FormData();
+  final _formData = LoginFormData();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
@@ -34,17 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final response = await ApiService.post('auth/login', _formData.toJson());
+      await widget.authService.login(_formData);
 
-      if (response.statusCode == 200) {
-        showMessage('Iniciaste de sesion correctamente', context);
-
-        // Handle successful submission
-      } else {
-        throw Exception('Submission failed');
-      }
+      context.go('/');
     } catch (e) {
-      showMessage('Error en el inicio de sesion.', context);
+      showMessage('Error en el inicio de sesion. $e', context);
     } finally {
       setState(() => _isLoading = false);
     }
@@ -103,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () => navigate(const RegisterScreen(), context),
+                  onPressed: () => context.push('/auth/register'),
                   child: Text(
                     'Todavia no tenes cuenta?',
                     style: TextStyle(color: colorScheme.primary),
@@ -118,33 +113,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     : const Text('Inicia Sesion'),
               ),
               const SizedBox(height: 16),
-              const Text('O', textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.apple),
-                label: const Text('Continue with Apple'),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.white),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.abc),
-                label: const Text('Continue with Google'),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.white),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
+              // const Text('O', textAlign: TextAlign.center),
+              // const SizedBox(height: 16),
+              // OutlinedButton.icon(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.apple),
+              //   label: const Text('Continue with Apple'),
+              //   style: OutlinedButton.styleFrom(
+              //     side: const BorderSide(color: Colors.white),
+              //     padding: const EdgeInsets.symmetric(vertical: 16),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              // OutlinedButton.icon(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.abc),
+              //   label: const Text('Continue with Google'),
+              //   style: OutlinedButton.styleFrom(
+              //     side: const BorderSide(color: Colors.white),
+              //     padding: const EdgeInsets.symmetric(vertical: 16),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

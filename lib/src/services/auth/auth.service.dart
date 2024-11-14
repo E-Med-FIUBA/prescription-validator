@@ -1,5 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:emed/src/environment/environment.dart';
+import 'package:emed/src/screens/auth/login_screen.dart';
+import 'package:emed/src/screens/auth/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '../api/api.dart';
 
 class AuthService {
   final StreamController<bool> _authStateController =
@@ -13,7 +19,8 @@ class AuthService {
   // Check the initial auth state when the service is created
   Future<void> _checkInitialAuthState() async {
     final prefs = SharedPreferencesAsync();
-    _isLoggedIn = await prefs.getBool('isLoggedIn') ?? false;
+    final token = await prefs.getString('token');
+    _isLoggedIn = token != null;
     _authStateController.add(_isLoggedIn);
   }
 
@@ -28,19 +35,67 @@ class AuthService {
   // Current auth state
   bool get isLoggedIn => _isLoggedIn;
 
-  // Login method
-  Future<bool> login(String username, String password) async {
-    // Here you would typically make an API call to validate credentials
-    // For this example, we'll just check if the username and password are not empty
-    if (username.isNotEmpty && password.isNotEmpty) {
-      _isLoggedIn = true;
-      final prefs = SharedPreferencesAsync();
+  Future<bool> login(LoginFormData data) async {
+    try {
+      final requestBody = jsonEncode(data.toJson());
 
-      await prefs.setBool('isLoggedIn', true);
-      _authStateController.add(true);
+      final response = await http.post(
+        Uri.parse('${Environment.apiUrl}/auth/login/pharmacist'),
+        body: requestBody,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final apiResponse = ApiResponse(
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
+
+      if (apiResponse.statusCode != 200) {
+        throw Exception('Invalid credentials');
+      }
+
+      setCredentials(apiResponse.body['token']);
+
       return true;
+    } catch (err) {
+      rethrow;
     }
-    return false;
+  }
+
+  Future<bool> register(RegisterFormData data) async {
+    try {
+      final requestBody = jsonEncode(data.toJson());
+
+      final response = await http.post(
+        Uri.parse('${Environment.apiUrl}/auth/register/pharmacist'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: requestBody,
+      );
+
+      final apiResponse = ApiResponse(
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
+
+      if (apiResponse.statusCode != 201) {
+        throw Exception(apiResponse.body);
+      }
+
+      setCredentials(apiResponse.body['token']);
+
+      return true;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> setCredentials(String token) async {
+    _isLoggedIn = true;
+    final prefs = SharedPreferencesAsync();
+
+    await prefs.setString('token', token);
+
+    _authStateController.add(true);
   }
 
   // Logout method
@@ -48,8 +103,14 @@ class AuthService {
     _isLoggedIn = false;
     final prefs = SharedPreferencesAsync();
 
-    await prefs.setBool('isLoggedIn', false);
+    await prefs.remove('token');
     _authStateController.add(false);
+  }
+
+  Future<String?> getToken() async {
+    final prefs = SharedPreferencesAsync();
+
+    return prefs.getString('token');
   }
 
   // Dispose method to close the stream controller
