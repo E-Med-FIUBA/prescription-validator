@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               StyledFormField(
-                labelText: 'Password',
+                labelText: 'Contraseña',
                 obscureText: _obscurePassword,
                 suffixIcon: IconButton(
                   icon: Icon(_obscurePassword
