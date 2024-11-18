@@ -1,3 +1,4 @@
+import 'package:emed/src/services/prescription/classes/prescription.dart';
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';

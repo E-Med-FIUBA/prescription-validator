@@ -1,103 +1,180 @@
+import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../services/prescription/prescription.service.dart';
-import '../../utils/scaffold_messenger.dart';
+import 'package:intl/intl.dart';
 
 class PrescriptionScreen extends StatefulWidget {
   final String prescriptionId;
+  final PrescriptionService prescriptionService;
 
   static const routeName = '/prescription';
 
-  final PrescriptionService prescriptionService;
-
-  PrescriptionScreen(
-      {required this.prescriptionId, required this.prescriptionService});
+  const PrescriptionScreen({
+    Key? key,
+    required this.prescriptionId,
+    required this.prescriptionService,
+  }) : super(key: key);
 
   @override
   _PrescriptionScreenState createState() => _PrescriptionScreenState();
 }
 
 class _PrescriptionScreenState extends State<PrescriptionScreen> {
-  late Future<Prescription?> prescription;
-
-  @override
-  void initState() {
-    super.initState();
-    prescription = fetchPrescription(widget.prescriptionId);
-  }
-
-  Future<Prescription?> fetchPrescription(String id) async {
+  Future<void> _markPrescriptionAsUsed() async {
     try {
-      final response = await widget.prescriptionService.fetchPrescription(id);
-      return response;
-    } catch (err) {
-      showMessage('Error al cargar la receta', context);
-    }
-    return null;
-  }
-
-  Future<void> markAsUsed(String id) async {
-    try {
-      await widget.prescriptionService.markAsUsed(id);
-      showMessage('Receta marcada como usada', context);
+      await widget.prescriptionService.markAsUsed(widget.prescriptionId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Receta marcada como usada')),
+      );
       context.go('/');
-    } catch (err) {
-      showMessage('Error al marcar la receta como usada', context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al marcar la receta: $e')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Prescription?>(
-      future: prescription,
+    return FutureBuilder(
+      future:
+          widget.prescriptionService.fetchPrescription(widget.prescriptionId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData) {
-          return const Center(child: Text('No se encontraron datos'));
-        } else {
-          final data = snapshot.data!;
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Medicamento: ${data.drug}',
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 12),
-                    Text('Presentación: ${data.presentation}',
-                        style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 12),
-                    Text('Cantidad: ${data.quantity}',
-                        style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 12),
-                    Text('Doctor: ${data.doctor}',
-                        style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await markAsUsed(widget.prescriptionId);
-                      },
-                      child: const Text('Marcar como usada'),
-                    )
-                  ],
+        }
+
+        var childrenWidgets = <Widget>[];
+
+        if (snapshot.hasError) {
+          childrenWidgets.add(
+            const Center(
+              child: Text(
+                'La receta no es valida.',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           );
+        } else if (!snapshot.hasData) {
+          childrenWidgets.add(
+            const Center(
+              child: Text(
+                'No se encontró la receta',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        } else {
+          final prescriptionData = snapshot.data!;
+          childrenWidgets = [
+            _buildSectionTitle('Receta'),
+            _buildDetailRow('Nombre',
+                '${prescriptionData.presentation.drugName} ${prescriptionData.presentation.name}'),
+            _buildDetailRow('Nombre comercial',
+                prescriptionData.presentation.commercialName),
+            _buildDetailRow(
+                'Forma farmacéutica', prescriptionData.presentation.form),
+            _buildDetailRow(
+                'Cantidad de unidades', prescriptionData.quantity.toString()),
+            _buildDetailRow('Diagnóstico', prescriptionData.indication),
+            _buildDetailRow(
+                'Fecha de emision',
+                DateFormat('dd/MM/yyyy').format(
+                  prescriptionData.emitedAt,
+                )),
+            const Divider(),
+            _buildSectionTitle('Profesional'),
+            _buildDetailRow(
+                'Nombre completo', prescriptionData.doctor.fullName),
+            _buildDetailRow('Especialidad', prescriptionData.doctor.specialty),
+            _buildDetailRow('Licencia', prescriptionData.doctor.license),
+            const Divider(),
+            _buildSectionTitle('Paciente'),
+            _buildDetailRow(
+                'Nombre completo', prescriptionData.patient.fullName),
+            _buildDetailRow(
+                'Plan de seguro', prescriptionData.patient.insuranceCompany),
+            _buildDetailRow(
+              'Fecha de nacimiento',
+              DateFormat('dd/MM/yyyy').format(
+                prescriptionData.patient.birthDate,
+              ),
+            ),
+            _buildDetailRow('Sexo', prescriptionData.patient.sex),
+            _buildDetailRow('DNI', prescriptionData.patient.dni.toString()),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: prescriptionData.used
+                  ? null
+                  : () => _markPrescriptionAsUsed(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    prescriptionData.used ? Colors.grey : Colors.blue,
+              ),
+              child: Text(
+                  prescriptionData.used ? 'Receta usada' : 'Marcar como usada'),
+            )
+          ];
         }
+
+        return Card(
+          elevation: 4,
+          margin: const EdgeInsets.all(16),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset('assets/images/logo.svg'),
+                const SizedBox(height: 16),
+                ...childrenWidgets,
+              ],
+            ),
+          ),
+        );
       },
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '$label:',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(value),
+        ],
+      ),
     );
   }
 }

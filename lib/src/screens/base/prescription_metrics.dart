@@ -1,3 +1,4 @@
+import 'package:emed/src/services/prescription/classes/prescription_metrics.dart';
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -65,6 +66,17 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
                   }
 
                   final data = snapshot.data!;
+
+                  if (data.topDrugs.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'Valide mas recetas para visualizar metricas',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
+
                   return Column(
                     mainAxisSize: MainAxisSize
                         .min, // Added to prevent unnecessary expansion

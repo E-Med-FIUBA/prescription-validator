@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class QRScanner extends StatefulWidget {
-  final Function(Barcode?)? handleQR;
+class QRScanner extends StatelessWidget {
+  final Function(Barcode?) handleQR;
+  final MobileScannerController? controller;
 
-  const QRScanner({super.key, this.handleQR});
-
-  @override
-  State<QRScanner> createState() => _QRScannerState();
-}
-
-class _QRScannerState extends State<QRScanner> {
-  Barcode? qR;
-
-  void _handleQR(BarcodeCapture qRs) {
-    if (mounted && widget.handleQR != null) {
-      widget.handleQR!(qRs.barcodes.firstOrNull);
-    }
-  }
+  const QRScanner({
+    Key? key,
+    required this.handleQR,
+    this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MobileScanner(
-      onDetect: _handleQR,
+      controller: controller,
+      onDetect: (capture) {
+        final List<Barcode> barcodes = capture.barcodes;
+        if (barcodes.isNotEmpty) {
+          handleQR(barcodes.first);
+        }
+      },
     );
   }
 }
