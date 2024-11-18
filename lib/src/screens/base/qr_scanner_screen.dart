@@ -33,7 +33,6 @@ class _QRScannerScreenState extends State<QRScannerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Handle app lifecycle changes
     if (state == AppLifecycleState.paused) {
       _controller?.stop();
     } else if (state == AppLifecycleState.resumed) {
@@ -50,9 +49,8 @@ class _QRScannerScreenState extends State<QRScannerScreen>
   void handleQR(Barcode? barcode) async {
     if (!_hasScanned && barcode != null && barcode.displayValue != null) {
       _hasScanned = true;
-      _controller?.stop(); // Stop scanning before navigation
+      _controller?.stop();
       await context.push('/prescription/${barcode.displayValue}');
-      // Optional: restart scanner if user comes back to this screen
       if (mounted) {
         setState(() {
           _hasScanned = false;
@@ -77,8 +75,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
           flex: 5,
           child: QRScanner(
             handleQR: handleQR,
-            controller:
-                _controller, // Pass the controller to your QRScanner widget
+            controller: _controller,
           ),
         ),
         const Expanded(
