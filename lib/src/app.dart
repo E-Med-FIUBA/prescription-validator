@@ -42,27 +42,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _rootNavigatorKey = GlobalKey<NavigatorState>();
-    final _shellNavigatorKey = GlobalKey<NavigatorState>();
+    final rootNavigatorKey = GlobalKey<NavigatorState>();
+    final shellNavigatorKey = GlobalKey<NavigatorState>();
 
     final GoRouter router = GoRouter(
       initialLocation: '/',
-      navigatorKey: _rootNavigatorKey,
+      navigatorKey: rootNavigatorKey,
       routes: [
         GoRoute(
-            parentNavigatorKey: _rootNavigatorKey,
+            parentNavigatorKey: rootNavigatorKey,
             path: '/auth/register',
             builder: (context, state) => RegisterScreen(
                   authService: authService,
                 )),
         GoRoute(
-            parentNavigatorKey: _rootNavigatorKey,
+            parentNavigatorKey: rootNavigatorKey,
             path: '/auth/login',
             builder: (context, state) => LoginScreen(
                   authService: authService,
                 )),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           path: '${PrescriptionScreen.routeName}/:id',
           builder: (context, state) {
             final id = state.pathParameters['id']!;
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
           },
         ),
         ShellRoute(
-            navigatorKey: _shellNavigatorKey,
+            navigatorKey: shellNavigatorKey,
             builder: (context, state, child) => AuthWrapper(
                   authService: authService,
                   child:
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
                 ),
             routes: [
               GoRoute(
-                parentNavigatorKey: _shellNavigatorKey,
+                parentNavigatorKey: shellNavigatorKey,
                 path: PrescriptionHistoryScreen.routeName,
                 builder: (context, state) => LazyLoadScreen(
                   routeName: PrescriptionHistoryScreen.routeName,
@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               GoRoute(
-                parentNavigatorKey: _shellNavigatorKey,
+                parentNavigatorKey: shellNavigatorKey,
                 path: PrescriptionMetricsScreen.routeName,
                 builder: (context, state) => LazyLoadScreen(
                   routeName: PrescriptionMetricsScreen.routeName,
@@ -100,7 +100,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               GoRoute(
-                parentNavigatorKey: _shellNavigatorKey,
+                parentNavigatorKey: shellNavigatorKey,
                 path: QRScannerScreen.routeName,
                 builder: (context, state) => LazyLoadScreen(
                   routeName: QRScannerScreen.routeName,
@@ -108,7 +108,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               GoRoute(
-                parentNavigatorKey: _shellNavigatorKey,
+                parentNavigatorKey: shellNavigatorKey,
                 path: PharmacistProfileView.routeName,
                 builder: (context, state) => LazyLoadScreen(
                   routeName: PharmacistProfileView.routeName,
@@ -118,7 +118,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               GoRoute(
-                parentNavigatorKey: _shellNavigatorKey,
+                parentNavigatorKey: shellNavigatorKey,
                 path: SettingsView.routeName,
                 builder: (context, state) => LazyLoadScreen(
                   routeName: SettingsView.routeName,

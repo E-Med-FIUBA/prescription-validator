@@ -7,19 +7,23 @@ class Prescription {
   final String doctor;
   final String patient;
   final DateTime? usedAt;
+  final int id;
 
-  Prescription(
-      {required this.drug,
-      required this.presentation,
-      required this.quantity,
-      required this.doctor,
-      required this.patient,
-      required this.usedAt});
+  Prescription({
+    required this.drug,
+    required this.presentation,
+    required this.quantity,
+    required this.doctor,
+    required this.patient,
+    required this.usedAt,
+    required this.id,
+  });
 
   factory Prescription.fromApiResponse(ApiResponse<dynamic> response) {
     final data = response.body;
 
     final prescription = Prescription(
+      id: data['id'],
       drug: data['presentation']['drug']['name'],
       presentation: data['presentation']['name'],
       quantity: data['quantity'],
@@ -35,9 +39,10 @@ class Prescription {
 
   factory Prescription.fromJson(Map<String, dynamic> data) {
     final prescription = Prescription(
+      id: data['id'],
       drug: data['presentation']['drug']['name'] +
           ' ' +
-          data['presentation']['commercialName'],
+          data['presentation']['name'],
       presentation: data['presentation']['name'],
       quantity: data['quantity'],
       doctor: data['doctor']['user']['name'] +

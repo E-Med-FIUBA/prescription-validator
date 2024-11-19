@@ -1,6 +1,7 @@
 import 'package:emed/src/services/auth/auth.service.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../utils/validators.dart';
 import '../../widgets/primary_button.dart';
@@ -72,17 +73,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SvgPicture.asset('assets/images/logo.svg'),
+              const SizedBox(height: 32),
               const Text('Crea tu cuenta',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 32),
               StyledFormField(
-                labelText: 'Email',
+                labelText: 'Correo Electrónico',
                 validators: const [Validators.required, Validators.email],
                 onSaved: (value) => _formData.email = value ?? '',
               ),
               const SizedBox(height: 16),
               StyledFormField(
-                labelText: 'Password',
+                labelText: 'Contraseña',
                 obscureText: _obscurePassword,
                 suffixIcon: IconButton(
                   icon: Icon(_obscurePassword
@@ -99,19 +102,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               StyledFormField(
-                labelText: 'First Name',
+                labelText: 'Nombre',
                 validators: const [Validators.required],
                 onSaved: (value) => _formData.firstName = value ?? '',
               ),
               const SizedBox(height: 16),
               StyledFormField(
-                labelText: 'Last Name',
+                labelText: 'Apellido',
                 validators: const [Validators.required],
                 onSaved: (value) => _formData.lastName = value ?? '',
               ),
               const SizedBox(height: 16),
               StyledFormField(
-                labelText: 'License',
+                labelText: 'Licencia',
                 validators: const [Validators.required],
                 onSaved: (value) => _formData.license = value ?? '',
               ),

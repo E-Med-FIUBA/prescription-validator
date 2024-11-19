@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'settings_controller.dart';
 
-/// Displays the various settings that can be customized by the user.
+/// Muestra las diversas configuraciones que el usuario puede personalizar.
 ///
-/// When a user changes a setting, the SettingsController is updated and
-/// Widgets that listen to the SettingsController are rebuilt.
+/// Cuando un usuario cambia una configuración, el SettingsController se actualiza y
+/// los Widgets que escuchan al SettingsController se reconstruyen.
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key, required this.controller});
 
-  static const routeName = '/settings';
+  static const routeName = '/configuraciones';
 
   final SettingsController controller;
 
@@ -21,39 +21,40 @@ class SettingsView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            'Settings',
+            'Configuraciones',
             style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(16),
-          // Glue the SettingsController to the theme selection DropdownButton.
+          // Vincula el SettingsController al DropdownButton de selección de tema.
           //
-          // When a user selects a theme from the dropdown list, the
-          // SettingsController is updated, which rebuilds the MaterialApp.
+          // Cuando un usuario selecciona un tema de la lista desplegable, el
+          // SettingsController se actualiza, lo que reconstruye el MaterialApp.
           child: DropdownButton<ThemeMode>(
-            // Read the selected themeMode from the controller
+            // Lee el themeMode seleccionado del controlador
             value: controller.themeMode,
-            // Call the updateThemeMode method any time the user selects a theme.
+            // Llama al método updateThemeMode cada vez que el usuario selecciona un tema.
             onChanged: controller.updateThemeMode,
             items: const [
               DropdownMenuItem(
                 value: ThemeMode.system,
-                child: Text('System Theme'),
+                child: Text('Tema del Sistema'),
               ),
               DropdownMenuItem(
                 value: ThemeMode.light,
-                child: Text('Light Theme'),
+                child: Text('Tema Claro'),
               ),
               DropdownMenuItem(
                 value: ThemeMode.dark,
-                child: Text('Dark Theme'),
+                child: Text('Tema Oscuro'),
               )
             ],
           ),
         ),
         ElevatedButton(
-            onPressed: () => {controller.logout()}, child: const Text('Logout'))
+            onPressed: () => {controller.logout()},
+            child: const Text('Cerrar sesión'))
       ],
     );
   }

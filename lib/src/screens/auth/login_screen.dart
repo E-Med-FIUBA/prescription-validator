@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../services/auth/auth.service.dart';
 import '../../utils/scaffold_messenger.dart';
@@ -62,6 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SvgPicture.asset('assets/images/logo.svg'),
+              const SizedBox(height: 32),
               const Text('Inicia Sesion',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 32),

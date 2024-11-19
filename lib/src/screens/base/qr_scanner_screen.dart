@@ -50,7 +50,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
     if (!_hasScanned && barcode != null && barcode.displayValue != null) {
       _hasScanned = true;
       _controller?.stop();
-      await context.push('/prescription/${barcode.displayValue}');
+      context.go('/prescription/${barcode.displayValue}');
       if (mounted) {
         setState(() {
           _hasScanned = false;

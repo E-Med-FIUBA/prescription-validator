@@ -2,12 +2,14 @@ import 'package:emed/src/services/prescription/classes/prescription.dart';
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/utils/scaffold_messenger.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class PrescriptionHistoryScreen extends StatefulWidget {
   final PrescriptionService prescriptionService;
 
-  PrescriptionHistoryScreen({required this.prescriptionService});
+  const PrescriptionHistoryScreen(
+      {super.key, required this.prescriptionService});
 
   static String routeName = '/';
 
@@ -32,6 +34,10 @@ class _PrescriptionHistoryScreenState extends State<PrescriptionHistoryScreen> {
       showMessage('Failed to load prescription history', context);
       return [];
     }
+  }
+
+  void _navigateToPrescriptionScreen(Prescription prescription) {
+    context.push('/prescription/${prescription.id}');
   }
 
   @override
@@ -70,21 +76,28 @@ class _PrescriptionHistoryScreenState extends State<PrescriptionHistoryScreen> {
                             padding: EdgeInsets.symmetric(vertical: 8.0),
                             child: Card(
                               elevation: 2,
-                              child: ListTile(
-                                contentPadding: EdgeInsets.all(16.0),
-                                title: Text(
-                                  '${prescription.drug} (x${prescription.quantity})',
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                subtitle: Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                    // 'ID: ${prescription.id}\n'
-                                    'Paciente: ${prescription.patient}\n'
-                                    'Médico: ${prescription.doctor}\n'
-                                    'Usado: ${DateFormat('dd/MM/yyyy').format(prescription.usedAt!)}',
+                              child: InkWell(
+                                onTap: () =>
+                                    _navigateToPrescriptionScreen(prescription),
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.all(16.0),
+                                  title: Text(
+                                    prescription.drug,
                                     style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                        Theme.of(context).textTheme.titleLarge,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  subtitle: Padding(
+                                    padding: EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      'Unidades: ${prescription.quantity.toString()}\n'
+                                      'Paciente: ${prescription.patient}\n'
+                                      'Médico: ${prescription.doctor}\n'
+                                      'Usado: ${DateFormat('dd/MM/yyyy').format(prescription.usedAt!)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
                                   ),
                                 ),
                               ),

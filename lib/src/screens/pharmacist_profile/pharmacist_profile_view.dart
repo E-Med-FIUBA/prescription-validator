@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../services/pharmacist/pharmacist.service.dart';
 import 'pharmacist_profile_controller.dart';
@@ -54,16 +55,16 @@ class PharmacistProfileView extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'License: ${pharmacist.license}',
+                      'Licencia: ${pharmacist.license}',
                       style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
                         controller.logout();
-                        Navigator.of(context).pushReplacementNamed('/login');
+                        context.go('/auth/login');
                       },
-                      child: const Text('Logout'),
+                      child: const Text('Cerrar sesion'),
                     ),
                   ],
                 ),
