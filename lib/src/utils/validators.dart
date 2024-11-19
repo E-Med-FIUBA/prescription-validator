@@ -45,7 +45,7 @@ class FormInputValidator {
 
   String? validateEmail(Key key, String? value) {
     if (value == null) {
-      return 'Ingrese un ${key.toString().toLowerCase().replaceAll(RegExp(r'<>[]'), '')}';
+      return 'Ingrese un ${key.toString().toLowerCase().replaceAll(RegExp(r"[<'\[\]>]"), '')}';
     }
 
     if (!emailRegex.hasMatch(value)) {
@@ -59,14 +59,14 @@ class FormInputValidator {
     String? value,
   ) {
     if (value == null || value.isEmpty) {
-      return 'Ingrese un ${key.toString().toLowerCase()}';
+      return 'Ingrese un ${key.toString().toLowerCase().replaceAll(RegExp(r"[<'\[\]>]"), '')} valido';
     }
     return null;
   }
 
   String? validatePasswordInput(Key key, String? value) {
     if (value == null) {
-      return 'Ingrese un ${key.toString().toLowerCase()}';
+      return 'Ingrese un ${key.toString().toLowerCase().replaceAll(RegExp(r"[<'\[\]>]"), '')}';
     }
 
     if (!passwordRegex.hasMatch(value)) {
