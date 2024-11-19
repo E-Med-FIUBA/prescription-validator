@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -15,28 +17,48 @@ class QRScannerScreen extends StatefulWidget {
 class _QRScannerScreenState extends State<QRScannerScreen>
     with WidgetsBindingObserver {
   bool _hasScanned = false;
-  MobileScannerController? _controller;
+  final MobileScannerController controller = MobileScannerController();
+
+  StreamSubscription<Object?>? _subscription;
 
   @override
   void initState() {
     super.initState();
-    _controller = MobileScannerController();
     WidgetsBinding.instance.addObserver(this);
+
+    _subscription = controller.barcodes.listen(handleQR);
+
+    unawaited(controller.start());
   }
 
   @override
-  void dispose() {
-    _controller?.dispose();
+  Future<void> dispose() async {
     WidgetsBinding.instance.removeObserver(this);
+    unawaited(_subscription?.cancel());
+    _subscription = null;
     super.dispose();
+    await controller.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      _controller?.stop();
-    } else if (state == AppLifecycleState.resumed) {
-      _controller?.start();
+    if (!controller.value.hasCameraPermission) {
+      return;
+    }
+
+    switch (state) {
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+        return;
+      case AppLifecycleState.resumed:
+        _subscription = controller.barcodes.listen(handleQR);
+
+        unawaited(controller.start());
+      case AppLifecycleState.inactive:
+        unawaited(_subscription?.cancel());
+        _subscription = null;
+        unawaited(controller.stop());
     }
   }
 
@@ -46,15 +68,17 @@ class _QRScannerScreenState extends State<QRScannerScreen>
     _hasScanned = false;
   }
 
-  void handleQR(Barcode? barcode) async {
-    if (!_hasScanned && barcode != null && barcode.displayValue != null) {
+  void handleQR(BarcodeCapture? barcode) async {
+    if (!_hasScanned && barcode != null && barcode.barcodes.isNotEmpty) {
       _hasScanned = true;
-      _controller?.stop();
-      context.go('/prescription/${barcode.displayValue}');
+      unawaited(_subscription?.cancel());
+      _subscription = null;
+      unawaited(controller.stop());
+      context.go('/prescription/${barcode.barcodes[0].displayValue}');
       if (mounted) {
         setState(() {
           _hasScanned = false;
-          _controller?.start();
+          controller.start();
         });
       }
     }
@@ -74,8 +98,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
         Expanded(
           flex: 5,
           child: QRScanner(
-            handleQR: handleQR,
-            controller: _controller,
+            controller: controller,
           ),
         ),
         const Expanded(
