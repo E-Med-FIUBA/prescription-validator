@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:emed/src/environment/environment.dart';
 import 'package:emed/src/services/auth/auth.service.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ApiResponse<T> {
@@ -34,6 +35,7 @@ class ApiService {
 
   Future<ApiResponse<ResponseBody>> post<RequestBody, ResponseBody>(
       String url, RequestBody body) async {
+    debugPrint('apiUrl: $apiUrl');
     final response = await http.post(
       Uri.parse('$apiUrl/$url'),
       headers: await headers,

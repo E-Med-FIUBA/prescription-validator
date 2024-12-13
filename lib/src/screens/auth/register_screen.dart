@@ -126,6 +126,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _formData.dni = value != null ? int.parse(value) : 0,
               ),
               const SizedBox(height: 24),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: () => context.push('/auth/login'),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Ya tienes una cuenta?',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(' '),
+                      Text(
+                        'Inicia Sesion',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
               PrimaryButton(
                 onPressed: _isLoading ? null : _submitForm,
                 child: _isLoading

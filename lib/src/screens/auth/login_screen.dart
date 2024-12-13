@@ -91,20 +91,21 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Olvidaste tu contraseña?',
-                    style: TextStyle(color: colorScheme.primary),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
                   onPressed: () => context.push('/auth/register'),
-                  child: Text(
-                    'Todavia no tenes cuenta?',
-                    style: TextStyle(color: colorScheme.primary),
+                  child: Row(
+                    children: [
+                      Text(
+                        'No tienes una cuenta?',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(' '),
+                      Text(
+                        'Registrate aqui',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.white),
+                      ),
+                    ],
                   ),
                 ),
               ),

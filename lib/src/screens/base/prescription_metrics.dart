@@ -8,10 +8,10 @@ class PrescriptionMetricsScreen extends StatefulWidget {
 
   static String routeName = '/prescription-metrics';
 
-  PrescriptionMetricsScreen({
-    Key? key,
+  const PrescriptionMetricsScreen({
+    super.key,
     required this.prescriptionService,
-  }) : super(key: key);
+  });
 
   @override
   State<PrescriptionMetricsScreen> createState() =>
@@ -36,13 +36,11 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
     return Card(
       elevation: 4,
       child: SingleChildScrollView(
-        // Added ScrollView
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize:
-                MainAxisSize.min, // Added to prevent unnecessary expansion
+            mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
                 'Métricas',
@@ -78,14 +76,13 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
                   }
 
                   return Column(
-                    mainAxisSize: MainAxisSize
-                        .min, // Added to prevent unnecessary expansion
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(
-                        // Wrapped chart in SizedBox with fixed height
                         height: 300,
                         child: _buildTopDrugsChart(data.topDrugs),
                       ),
+                      const Divider(),
                       const SizedBox(height: 24),
                       _buildMetricsGrid(data),
                     ],
@@ -102,11 +99,9 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
   Widget _buildTopDrugsChart(List<DrugUsage> topDrugs) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Adjust bar width based on available space
         final barWidth =
             (constraints.maxWidth / (topDrugs.length * 2)).clamp(15.0, 30.0);
-        // Calculate bottom title space needed
-        final reservedBottomSpace = 80.0; // Increased space for labels
+        final reservedBottomSpace = 80.0;
 
         return BarChart(
           BarChartData(
@@ -147,10 +142,8 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
                   reservedSize: reservedBottomSpace,
                   getTitlesWidget: (value, meta) {
                     if (value.toInt() >= topDrugs.length) return const Text('');
-                    // Calculate available width per label
                     final labelWidth = constraints.maxWidth / topDrugs.length;
-                    final fontSize = (labelWidth * 0.2)
-                        .clamp(9.0, 12.0); // Responsive font size
+                    final fontSize = (labelWidth * 0.2).clamp(9.0, 12.0);
 
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.0),
@@ -217,7 +210,7 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
                 barRods: [
                   BarChartRodData(
                     toY: entry.value.count.toDouble(),
-                    color: Colors.blue.shade400,
+                    color: Theme.of(context).colorScheme.primary,
                     width: barWidth,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(4),
@@ -234,13 +227,11 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
 
   Widget _buildMetricsGrid(PrescriptionMetricsData data) {
     return LayoutBuilder(
-      // Added LayoutBuilder for responsive grid
       builder: (context, constraints) {
         final crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
         return GridView.count(
           shrinkWrap: true,
-          physics:
-              const NeverScrollableScrollPhysics(), // Prevent nested scrolling
+          physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: crossAxisCount,
           childAspectRatio: 1.5,
           mainAxisSpacing: 8,

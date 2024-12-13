@@ -12,6 +12,7 @@ import 'package:emed/src/services/auth/auth_wrapper.dart';
 import 'package:emed/src/services/prescription/prescription.service.dart';
 import 'package:emed/src/settings/settings_controller.dart';
 import 'package:emed/src/settings/settings_view.dart';
+import 'package:emed/src/theme.dart';
 import 'package:emed/src/widgets/lazy_load_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -148,10 +149,8 @@ class MyApp extends StatelessWidget {
           ],
           onGenerateTitle: (BuildContext context) =>
               AppLocalizations.of(context)!.appTitle,
-          theme: ThemeData(
-              scaffoldBackgroundColor:
-                  const Color.fromARGB(255, 231, 230, 230)),
-          darkTheme: ThemeData.dark(),
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
           themeMode: settingsController.themeMode,
         );
       },

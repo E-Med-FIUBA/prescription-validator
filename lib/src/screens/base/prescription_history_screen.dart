@@ -76,6 +76,15 @@ class _PrescriptionHistoryScreenState extends State<PrescriptionHistoryScreen> {
                             padding: EdgeInsets.symmetric(vertical: 8.0),
                             child: Card(
                               elevation: 2,
+                              color: Theme.of(context).cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                side: BorderSide(
+                                  color: Theme.of(context)
+                                      .focusColor, // Change the color as needed
+                                  width: 1.0, // Change the width as needed
+                                ),
+                              ),
                               child: InkWell(
                                 onTap: () =>
                                     _navigateToPrescriptionScreen(prescription),

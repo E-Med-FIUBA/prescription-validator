@@ -21,7 +21,12 @@ class PrescriptionScreen extends StatefulWidget {
 }
 
 class _PrescriptionScreenState extends State<PrescriptionScreen> {
+  bool _isLoading = false;
+
   Future<void> _markPrescriptionAsUsed() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       await widget.prescriptionService.markAsUsed(widget.prescriptionId);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -32,11 +37,17 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al marcar la receta: $e')),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Receta'),
@@ -57,13 +68,13 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
             if (snapshot.hasError) {
               childrenWidgets.add(
-                const Center(
+                Center(
                   child: Text(
                     'La receta no es valida.',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
+                      color: colorScheme.error,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -71,13 +82,13 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
               );
             } else if (!snapshot.hasData) {
               childrenWidgets.add(
-                const Center(
+                Center(
                   child: Text(
                     'No se encontró la receta',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
+                      color: colorScheme.error,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -86,7 +97,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
             } else {
               final prescriptionData = snapshot.data!;
               childrenWidgets = [
-                buildSectionTitle('Receta'),
+                buildSectionTitle('Receta', colorScheme.primary),
                 buildDetailRow('Nombre',
                     '${prescriptionData.presentation.drugName} ${prescriptionData.presentation.name}'),
                 buildDetailRow('Nombre comercial',
@@ -102,14 +113,14 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                       prescriptionData.emitedAt,
                     )),
                 const Divider(),
-                buildSectionTitle('Profesional'),
+                buildSectionTitle('Profesional', colorScheme.primary),
                 buildDetailRow(
                     'Nombre completo', prescriptionData.doctor.fullName),
                 buildDetailRow(
                     'Especialidad', prescriptionData.doctor.specialty),
                 buildDetailRow('Licencia', prescriptionData.doctor.license),
                 const Divider(),
-                buildSectionTitle('Paciente'),
+                buildSectionTitle('Paciente', colorScheme.primary),
                 buildDetailRow(
                     'Nombre completo', prescriptionData.patient.fullName),
                 buildDetailRow('Plan de seguro',
@@ -124,16 +135,24 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                 buildDetailRow('DNI', prescriptionData.patient.dni.toString()),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: prescriptionData.used
+                  onPressed: prescriptionData.used || _isLoading
                       ? null
                       : () => _markPrescriptionAsUsed(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        prescriptionData.used ? Colors.grey : Colors.blue,
+                    backgroundColor: prescriptionData.used
+                        ? colorScheme.onSurface
+                        : colorScheme.primary,
                   ),
-                  child: Text(prescriptionData.used
-                      ? 'Receta usada'
-                      : 'Marcar como usada'),
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              colorScheme.onPrimary),
+                        )
+                      : Text(
+                          prescriptionData.used
+                              ? 'Receta usada'
+                              : 'Marcar como usada',
+                          style: TextStyle(color: colorScheme.onPrimary)),
                 )
               ];
             }
@@ -158,15 +177,15 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
         ));
   }
 
-  Widget buildSectionTitle(String title) {
+  Widget buildSectionTitle(String title, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.blue,
+          color: color,
         ),
       ),
     );
