@@ -108,14 +108,21 @@ class VerifiedPrescription {
 
   factory VerifiedPrescription.fromApiResponse(ApiResponse response) {
     final data = response.body;
+
+    final patient = Patient.fromJson(data['patient']);
+
+    final doctor = Doctor.fromJson(data['doctor']);
+
+    final presentation = Presentation.fromJson(data['presentation']);
+
     return VerifiedPrescription(
       id: data['id'],
       indication: data['indication'],
       emitedAt: DateTime.parse(data['emitedAt']),
       quantity: data['quantity'],
-      patient: Patient.fromJson(data['patient']),
-      doctor: Doctor.fromJson(data['doctor']),
-      presentation: Presentation.fromJson(data['presentation']),
+      patient: patient,
+      doctor: doctor,
+      presentation: presentation,
       used: data['used'],
     );
   }

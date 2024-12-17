@@ -64,12 +64,25 @@ class MyApp extends StatelessWidget {
                 )),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
+          path: '${PrescriptionScreen.routeName}/:id/verify',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return PrescriptionScreen(
+              prescriptionService: prescriptionService,
+              prescriptionId: id,
+              verify: true,
+            );
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '${PrescriptionScreen.routeName}/:id',
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return PrescriptionScreen(
               prescriptionService: prescriptionService,
               prescriptionId: id,
+              verify: false,
             );
           },
         ),
@@ -152,6 +165,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: settingsController.themeMode,
+          debugShowCheckedModeBanner: false,
         );
       },
     );

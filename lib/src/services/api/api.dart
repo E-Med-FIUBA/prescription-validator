@@ -2,19 +2,14 @@ import 'dart:convert';
 
 import 'package:emed/src/environment/environment.dart';
 import 'package:emed/src/services/auth/auth.service.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ApiResponse<T> {
   final int statusCode;
-  final String _responseBody;
+  late final T body;
 
   ApiResponse({required this.statusCode, required String responseBody})
-      : _responseBody = responseBody;
-
-  T get body {
-    return jsonDecode(_responseBody) as T;
-  }
+      : body = jsonDecode(responseBody);
 }
 
 class ApiService {
@@ -35,7 +30,6 @@ class ApiService {
 
   Future<ApiResponse<ResponseBody>> post<RequestBody, ResponseBody>(
       String url, RequestBody body) async {
-    debugPrint('apiUrl: $apiUrl');
     final response = await http.post(
       Uri.parse('$apiUrl/$url'),
       headers: await headers,

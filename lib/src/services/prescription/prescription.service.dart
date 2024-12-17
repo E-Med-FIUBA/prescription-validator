@@ -9,9 +9,31 @@ class PrescriptionService {
 
   final ApiService _apiService;
 
-  Future<VerifiedPrescription> fetchPrescription(String id) async {
+  Future<VerifiedPrescription> fetchPrescription(String id, bool verify) async {
+    if (verify) {
+      return _verifyPrescription(id);
+    } else {
+      return _fetchPrescription(id);
+    }
+  }
+
+  Future<VerifiedPrescription> _verifyPrescription(String id) async {
     try {
       final response = await _apiService.get('prescriptions/$id/verify');
+
+      if (response.statusCode == 200) {
+        return VerifiedPrescription.fromApiResponse(response);
+      } else {
+        throw Exception('Failed to verify prescription');
+      }
+    } catch (e) {
+      throw Exception('Failed to verify prescription');
+    }
+  }
+
+  Future<VerifiedPrescription> _fetchPrescription(String id) async {
+    try {
+      final response = await _apiService.get('prescriptions/$id');
 
       if (response.statusCode == 200) {
         return VerifiedPrescription.fromApiResponse(response);

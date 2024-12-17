@@ -7,14 +7,15 @@ import 'package:intl/intl.dart';
 class PrescriptionScreen extends StatefulWidget {
   final String prescriptionId;
   final PrescriptionService prescriptionService;
+  final bool verify;
 
   static const routeName = '/prescription';
 
-  const PrescriptionScreen({
-    super.key,
-    required this.prescriptionId,
-    required this.prescriptionService,
-  });
+  const PrescriptionScreen(
+      {super.key,
+      required this.prescriptionId,
+      required this.prescriptionService,
+      required this.verify});
 
   @override
   _PrescriptionScreenState createState() => _PrescriptionScreenState();
@@ -58,7 +59,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
         ),
         body: FutureBuilder(
           future: widget.prescriptionService
-              .fetchPrescription(widget.prescriptionId),
+              .fetchPrescription(widget.prescriptionId, widget.verify),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -67,6 +68,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
             var childrenWidgets = <Widget>[];
 
             if (snapshot.hasError) {
+              debugPrint('Error: ${snapshot.error}');
               childrenWidgets.add(
                 Center(
                   child: Text(

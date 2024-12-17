@@ -238,7 +238,7 @@ class _PrescriptionMetricsScreenState extends State<PrescriptionMetricsScreen> {
           crossAxisSpacing: 8,
           children: [
             _buildMetricCard(
-              'Total de Prescriptores',
+              'Total de Prescripciones',
               data.totalPrescriptions.toString(),
               Icons.medical_services,
             ),
