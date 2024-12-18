@@ -74,7 +74,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
       unawaited(_subscription?.cancel());
       _subscription = null;
       unawaited(controller.stop());
-      context.go('/prescription/${barcode.barcodes[0].displayValue}');
+      context.go('/prescription/${barcode.barcodes[0].displayValue}/verify');
       if (mounted) {
         setState(() {
           _hasScanned = false;

@@ -154,24 +154,26 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                           prescriptionData.used
                               ? 'Receta usada'
                               : 'Marcar como usada',
-                          style: TextStyle(color: colorScheme.onPrimary)),
+                          style: TextStyle(color: colorScheme.onSurface)),
                 )
               ];
             }
 
-            return Card(
-              elevation: 4,
-              margin: const EdgeInsets.all(16),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset('assets/images/logo.svg'),
-                    const SizedBox(height: 16),
-                    ...childrenWidgets,
-                  ],
+            return SingleChildScrollView(
+              child: Card(
+                elevation: 4,
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset('assets/images/logo.svg'),
+                      const SizedBox(height: 16),
+                      ...childrenWidgets,
+                    ],
+                  ),
                 ),
               ),
             );
